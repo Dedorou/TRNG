@@ -22,7 +22,7 @@ generate
     end
 endgenerate
 
-and (s[0], s[WIDTH], en);
+and (s[0], s[WIDTH], en_i);
 
 FDRE #(
    .INIT(1'b0) 
