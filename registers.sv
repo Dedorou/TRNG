@@ -3,12 +3,12 @@ parameter WIDTH = 4
 )(
 input  logic                 clk, 
 input  logic                 rst, 
-input  logic                 we,
+input  logic                 we_i,
 input  logic [WIDTH - 1 : 0] d_i,
  
 output logic [WIDTH - 1 : 0] d_o);
 
-always_ff @(clk) begin
+always_ff @(posedge clk) begin
   if (rst)
     d_o <= 'b0;
   else 
@@ -19,7 +19,7 @@ end
 endmodule
 
 module byte_write_register #(
-parameter WIDTH      = 1,
+parameter WIDTH      = 32,
 parameter BYTE_WIDTH = 8,
 parameter WE_WIDTH   = (WIDTH - 1)/BYTE_WIDTH + 1
 )(
@@ -30,7 +30,7 @@ input  logic    [WIDTH - 1 : 0] d_i,
    
 output logic    [WIDTH - 1 : 0] d_o);
 
-always_ff @(clk) begin
+always_ff @(posedge clk) begin
   if (rst)
     d_o <= 'b0;
   else
