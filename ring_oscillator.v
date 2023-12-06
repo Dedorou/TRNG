@@ -1,17 +1,18 @@
 module ring_oscillator #(
-parameter N = 7 
+parameter WIDTH = 7 
 )(
 input  clk,
 input  rst,
-input  en,
-output out
+input  en_i,
+
+output d_o
 );
 
-(* DONT_TOUCH = "yes" *) wire [N : 0] s;
+(* DONT_TOUCH = "yes" *) wire [WIDTH : 0] s;
 
 genvar i;
 generate
-    for (i = 0; i < N; i = i + 1) begin 
+    for (i = 0; i < WIDTH; i = i + 1) begin 
         LUT1 #(
            .INIT(2'b01) 
         ) LUT1_inst (
@@ -21,14 +22,14 @@ generate
     end
 endgenerate
 
-and (s[0], s[N], en);
+and (s[0], s[WIDTH], en);
 
 FDRE #(
    .INIT(1'b0) 
 ) FDRE_inst (
-   .Q(out),      
+   .Q(d_o),      
    .C(clk),                       
-   .CE(en),                        
+   .CE(en_i),                        
    .R(rst),                     
    .D(s[0])                
 );

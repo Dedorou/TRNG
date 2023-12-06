@@ -1,45 +1,45 @@
-module LFSR #(
-parameter                width = 10,
-parameter [width -1 : 0] polynom = 'h204
+module lfsr #(
+parameter WIDTH = 5
 )(    
-input                    clk, 
-input                    rst, 
-input                    en,
-input                    seed_we,
-input     [width -1 : 0] seed,
-input                    ring_oscillator,
+input                 clk, 
+input                 rst, 
+input                 en_i,
+input  [WIDTH -1 : 0] polynom_i,
+input                 seed_we_i,
+input  [WIDTH -1 : 0] seed_i,
+input                 ro_i,
 
-output    [width -1 : 0] data_out
+output [WIDTH -1 : 0] d_o
 );
 
-reg       [width -1 : 0] LFSR_reg;
-reg                      feedback;
+reg [WIDTH -1 : 0] lfsr_reg;
+reg                feedback;
       
-wire                     LFSR_in;
+wire               lfsr_in;
 
 integer i;
 always @(*) begin
-    feedback = LFSR_reg[0];
-    for (i = 0; i < width; i = i + 1) begin
-        if (polynom[i] == 1'b1) begin
-            feedback = feedback ^ LFSR_reg[i];
-        end
+  feedback = lfsr_reg[0];
+  for (i = 1; i < WIDTH; i = i + 1) begin
+    if (polynom_i[WIDTH - 1 - i] == 1'b1) begin
+      feedback = feedback ^ lfsr_reg[i];
     end
+  end
 end
 
-assign LFSR_in = feedback ^ ring_oscillator;
+//assign lfsr_in = feedback ^ ro_i;
 
 always @(posedge clk ) begin
-    if (rst) begin
-        LFSR_reg <= 'b0;
-    end else if (seed_we) begin
-        LFSR_reg <= seed;
-    end else if (en) begin 
-        LFSR_reg <= {LFSR_in, LFSR_reg[width - 1 : 1]};
-    end
+  if (rst) begin
+    lfsr_reg <= 'b0;
+  end else if (seed_we_i) begin
+    lfsr_reg <= seed_i;
+  end else if (en_i) begin 
+    lfsr_reg <= {feedback, lfsr_reg[WIDTH - 1 : 1]};
+  end
 end
 
-assign data_out = LFSR_reg;
+assign d_o = lfsr_reg;
 
 endmodule      
 

@@ -4,7 +4,7 @@ parameter WIDTH = 5
 input                  clk, 
 input                  rst, 
 input                  en_i,
-input [WIDTH - 1 : 0]  max_counts_i,
+input  [WIDTH - 1 : 0] max_counts_i,
 
 output                 ro_en_o,
 output [WIDTH - 1 : 0] d_o
@@ -12,6 +12,7 @@ output [WIDTH - 1 : 0] d_o
 
 reg [WIDTH - 1 : 0] counter;
 reg                 ro_en_reg;
+
 always @(posedge clk) begin
   if (rst) begin 
     counter = 'b0;
