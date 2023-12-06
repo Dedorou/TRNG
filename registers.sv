@@ -1,10 +1,10 @@
 module register #(
 parameter WIDTH = 4
 )(
-input  logic                  clk, 
-input  logic                  rst, 
-input  logic                  we,
-input  logic [WIDTH - 1 : 0] d_o,
+input  logic                 clk, 
+input  logic                 rst, 
+input  logic                 we,
+input  logic [WIDTH - 1 : 0] d_i,
  
 output logic [WIDTH - 1 : 0] d_o);
 
@@ -12,7 +12,8 @@ always_ff @(clk) begin
   if (rst)
     d_o <= 'b0;
   else 
-    d_o <= d_i;
+    if (we_i)
+      d_o <= d_i;
 end
 
 endmodule
@@ -34,7 +35,7 @@ always_ff @(clk) begin
     d_o <= 'b0;
   else
     for (integer i = 0; i < WE_WIDTH; i = i + 1) begin 
-      if (we[i])
+      if (we_i[i])
 	    d_o[(BYTE_WIDTH * i) +: BYTE_WIDTH] <= d_i[(BYTE_WIDTH * i) +: BYTE_WIDTH];	
 	end
 end 
