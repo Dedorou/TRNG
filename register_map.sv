@@ -62,7 +62,7 @@ always_comb begin
   endcase
 end
 
-always_ff @( clk ) begin
+always_ff @(posedge clk) begin
   rdata_o <= rdata_int;
 end
 
