@@ -1,45 +1,42 @@
-module param_reg #(
-parameter N = 4
+module register #(
+parameter WIDTH = 4
 )(
-input      clk, 
-input      rst, 
-input      we,
-input      [N - 1 : 0] D,
+input  logic                  clk, 
+input  logic                  rst, 
+input  logic                  we,
+input  logic [WIDTH - 1 : 0] d_o,
+ 
+output logic [WIDTH - 1 : 0] d_o);
 
-output reg [N - 1 : 0] Q);
-
-always @(posedge clk) begin 
-	if (rst) begin 
-		Q <= 0;
-	end else if (we) begin 
-		Q <= D;
-	end 
+always_ff @(clk) begin
+  if (rst)
+    d_o <= 'b0;
+  else 
+    d_o <= d_i;
 end
 
 endmodule
 
-module byte_write_reg #(
-parameter width = 32,
-parameter byte_width = 8
+module byte_write_register #(
+parameter WIDTH      = 1,
+parameter BYTE_WIDTH = 8,
+parameter WE_WIDTH   = (WIDTH - 1)/BYTE_WIDTH + 1
 )(
-input                      clk, 
-input                      rst, 
-input      [3         : 0] we,
-input      [width - 1 : 0] D,
+input  logic                    clk, 
+input  logic                    rst, 
+input  logic [WE_WIDTH - 1 : 0] we_i,
+input  logic    [WIDTH - 1 : 0] d_i,
+   
+output logic    [WIDTH - 1 : 0] d_o);
 
-output reg [width - 1 : 0] Q);
-
-integer i;
-always @(posedge clk) begin 
-	if (rst) begin 
-		Q <= 0;
-	end else begin 
-		for (i = 0; i < 4; i = i + 1) begin
-			if (we[i]) begin
-				Q[(byte_width * i) +: byte_width] <= D[(byte_width * i) +: byte_width];
-			end
-		end
-	end 
-end
+always_ff @(clk) begin
+  if (rst)
+    d_o <= 'b0;
+  else
+    for (integer i = 0; i < WE_WIDTH; i = i + 1) begin 
+      if (we[i])
+	    d_o[(BYTE_WIDTH * i) +: BYTE_WIDTH] <= d_i[(BYTE_WIDTH * i) +: BYTE_WIDTH];	
+	end
+end 
 
 endmodule
