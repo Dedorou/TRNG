@@ -14,7 +14,7 @@ reg [WIDTH - 1 : 0] counter;
 reg                 ro_en_reg;
 
 always @(posedge clk) begin
-  if (rst) begin 
+  if (rst | ~en_i) begin 
     counter = 'b0;
   end else if (en_i) begin 
     if (counter == max_counts_i) begin    
